@@ -1,13 +1,22 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive } from 'vue';
+import { loginUserService } from '../services/LoginService.ts';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
+
+const handleLogin = async () => {
+    const loginResult = await loginUserService();
+    console.log(loginResult);
+    router.push('/home');
+}
 </script>
 
 <template>
  <div class="bg-gray-100 min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded-lg shadow-lg w-96">
         <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">ログイン</h2>
-        <form action="#" method="POST">
+        <form @submit.prevent="handleLogin">
             <div class="mb-4">
                 <label for="id" class="block text-sm font-medium text-gray-700">ログインID</label>
                 <input
