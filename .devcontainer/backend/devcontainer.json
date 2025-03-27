@@ -1,0 +1,19 @@
+{
+	"name": "backend",
+	"dockerComposeFile": [
+		"../../docker-compose.yml"
+	],
+	"service": "backend",
+	"workspaceFolder": "/home/cozy/backend",
+	"remoteUser": "cozy",
+	"shutdownAction": "stopCompose",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"vmware.vscode-boot-dev-pack",
+				"vscjava.vscode-java-pack",
+				"rvest.vs-code-prettier-eslint"
+			]
+		}
+	}
+}

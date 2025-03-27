@@ -1,0 +1,54 @@
+services:
+  db:
+    container_name: db-container
+    build:
+      context: ./docker/db
+      dockerfile: Dockerfile
+    tty: true
+    volumes:
+      - db-store:/var/lib/postgres/data
+    environment:
+      TZ: Asia/Tokyo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: 'stock-app'
+    ports:
+      - "5433:5432"
+  backend:
+    container_name: backend-container
+    build:
+      context: ./docker/backend
+      dockerfile: Dockerfile
+      args:
+        USERNAME: ${USERNAME:-cozy}
+        USER_GROUP_NAME: ${USER_GROUP_NAME:-developer}
+        USER_UID: ${USER_UID:-1000}
+        USER_GID: ${USER_GID:-1000}
+    tty: true
+    working_dir: /home/${USERNAME:-cozy}/backend
+    volumes:
+      - ./backend:/home/${USERNAME:-cozy}/backend:cached
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/stock-app
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      TZ: Asia/Tokyo
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
+  frontend:
+    container_name: frontend_container
+    build:
+      context: ./docker/frontend
+      dockerfile: Dockerfile
+    tty: true
+    working_dir: /home/frontend
+    volumes:
+      - ./frontend:/home/frontend
+    depends_on:
+      - backend
+    ports:
+      - 5173:5173
+volumes:
+  db-store:

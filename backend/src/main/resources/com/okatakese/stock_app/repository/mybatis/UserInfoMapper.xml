@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.okatakese.stock_app.repository.mybatis.UserInfoMapper">
+    <select id="getUserInfo" resultType="com.okatakese.stock_app.model.UserInfoModel">
+	    SELECT
+		    user_id,
+		    user_name,
+		    delete_flg
+	    FROM
+		    tb_mst_user
+	    WHERE
+		    user_id = #{userId}
+    </select>
+</mapper>
