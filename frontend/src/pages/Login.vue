@@ -4,11 +4,20 @@ import { loginUserService } from '../services/LoginService.ts';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+const inputUserId = ref('');
+const inputUserPassword = ref('');
 
 const handleLogin = async () => {
-    const loginResult = await loginUserService();
-    console.log(loginResult);
-    router.push('/home');
+    const param = {
+        userId: inputUserId.value,
+        userPassword: inputUserPassword.value,
+    }
+    loginUserService(param).then(result => {
+        console.log(result.data);
+        router.push('/home');
+    }).catch(err => {
+        console.log(err);
+    });
 }
 </script>
 
@@ -22,6 +31,7 @@ const handleLogin = async () => {
                 <input
                     type="text"
                     id="id"
+                    v-model="inputUserId"
                     name="id"
                     required
                     class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
@@ -32,6 +42,7 @@ const handleLogin = async () => {
                 <input
                     type="password"
                     id="password"
+                    v-model="inputUserPassword"
                     name="password"
                     required
                     class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm" 

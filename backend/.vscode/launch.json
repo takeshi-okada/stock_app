@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "StockAppApplication",
+            "request": "launch",
+            "mainClass": "com.okatakese.stock_app.StockAppApplication",
+            "projectName": "stock-app-backend"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-StockAppApplication<stock-app>",
             "request": "launch",
             "cwd": "${workspaceFolder}",

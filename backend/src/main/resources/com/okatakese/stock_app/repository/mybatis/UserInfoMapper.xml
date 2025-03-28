@@ -6,7 +6,9 @@
     <select id="getUserInfo" resultType="com.okatakese.stock_app.model.UserInfoModel">
 	    SELECT
 		    user_id,
+			user_password,
 		    user_name,
+			birth,
 		    delete_flg
 	    FROM
 		    tb_mst_user
