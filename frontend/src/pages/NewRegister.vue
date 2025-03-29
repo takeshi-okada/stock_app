@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 import { useCustomToast } from '../config/ToastConfig';
 import { ERR_COMMON_MESSAGE_01, ERR_COMMON_MESSAGE_02 } from '../constant/messageConstants';
 import { checkHalfWidthAlphanumericCharacter } from '../utils/Validation';
 import { getMessage } from '../utils/Message';
+import { registUserService } from '../services/NewRegistService';
+import type { NewRegistUserRequestModel } from '../model/NewRegistUserRequestModel';
 
 const router = useRouter();
 const toast = useCustomToast()
@@ -31,11 +33,20 @@ const handleRegister = async () => {
         toast.showErrorToast(getMessage(ERR_COMMON_MESSAGE_01, "パスワード", "確認用パスワード"));
         return
     }
-    const param = {
+
+    const param: NewRegistUserRequestModel = {
         userId: inputUserId.value,
+        userName: inputUserName.value,
         userPassword: inputUserPassword.value,
+        birth: inputUserBirth.value,
     }
-    toast.showSuccessToast("登録成功")
+    registUserService(param).then(result => {
+        console.log(result.data);
+        router.push('/home');
+    }).catch(err => {
+        toast.showErrorToast(err);
+        console.log(err);
+    })
 }
 </script>
 

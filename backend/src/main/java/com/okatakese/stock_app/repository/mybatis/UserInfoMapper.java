@@ -17,5 +17,12 @@ public interface UserInfoMapper {
     * @param userId ユーザーID
     * @return ユーザー情報
     */
-   public Optional<UserInfoModel> getUserInfo(@Param("userId") String userId); 
+   public Optional<UserInfoModel> getUserInfo(@Param("userId") String userId);
+   
+   /**
+    * ユーザー情報を登録する
+    * @param userInfoModel 登録するユーザー情報
+    * @return 登録数
+    */
+   public int insertUserInfo(UserInfoModel userInfoModel);
 }

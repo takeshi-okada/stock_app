@@ -15,4 +15,16 @@
 	    WHERE
 		    user_id = #{userId}
     </select>
+
+	<insert id="insertUserInfo" parameterType="com.okatakese.stock_app.model.UserInfoModel">
+	    INSERT INTO
+		    tb_mst_user
+		VALUES (
+			#{userId},
+			#{userPassword},
+			#{userName},
+			#{birth},
+			false
+		)
+    </insert>
 </mapper>

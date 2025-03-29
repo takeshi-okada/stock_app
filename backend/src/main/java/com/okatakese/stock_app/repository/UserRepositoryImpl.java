@@ -10,14 +10,19 @@ import com.okatakese.stock_app.repository.mybatis.UserInfoMapper;
 
 
 @Repository
-public class LoginRepositoryImpl implements LoginRepository {
+public class UserRepositoryImpl implements UserRepository {
 
     @Autowired
     private UserInfoMapper userInfoMapper;
 
     @Override
-    public Optional<UserInfoModel> getLoginUserInfo(String userId) {
+    public Optional<UserInfoModel> getUserInfo(String userId) {
         return userInfoMapper.getUserInfo(userId);
+    }
+
+    @Override
+    public int insertUserInfo(UserInfoModel userInfoModel) {
+        return userInfoMapper.insertUserInfo(userInfoModel);
     }
     
 }

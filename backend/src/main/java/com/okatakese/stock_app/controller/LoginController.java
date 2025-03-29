@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.okatakese.stock_app.model.LoginRequestModel;
 import com.okatakese.stock_app.model.UserInfoModel;
-import com.okatakese.stock_app.service.LoginService;
+import com.okatakese.stock_app.service.UserService;
 /**
  * ログイン関連コントローラー
  */
 @RestController
 public class LoginController {
     @Autowired
-    private LoginService loginService;
+    private UserService loginService;
 
     /**
      * ログインボタン押下時処理
@@ -23,7 +23,7 @@ public class LoginController {
      */
     @PostMapping("/login")
     public UserInfoModel getLoginUser(@RequestBody LoginRequestModel request) {
-        UserInfoModel userInfo = loginService.getLoginUserInfo(request);    
+        UserInfoModel userInfo = loginService.getUserInfo(request.getUserId(), request.getUserPassword());    
         return userInfo;
     }
 }

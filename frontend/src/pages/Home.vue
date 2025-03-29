@@ -4,7 +4,7 @@ import { useCustomToast } from '../config/ToastConfig.ts';
 
 
 const toast = useCustomToast();
-toast.showWarningToast("ログイン成功");
+toast.showSuccessToast("ログイン成功");
 </script>
 
 <template>
