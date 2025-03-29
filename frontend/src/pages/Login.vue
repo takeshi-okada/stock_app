@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref } from 'vue';
 import { loginUserService } from '../services/LoginService.ts';
 import { useRouter } from 'vue-router';
+import { useCustomToast } from '../config/ToastConfig.ts';
 
 const router = useRouter();
+const toast = useCustomToast()
 const inputUserId = ref('');
 const inputUserPassword = ref('');
 
@@ -16,6 +18,7 @@ const handleLogin = async () => {
         console.log(result.data);
         router.push('/home');
     }).catch(err => {
+        toast.showErrorToast(err);
         console.log(err);
     });
 }
