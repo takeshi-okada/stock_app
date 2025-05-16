@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
 import { useCustomToast } from '../config/ToastConfig.ts';
-
+import Sidebar from '../components/Sidebar.vue';
 
 const toast = useCustomToast();
 toast.showSuccessToast("ログイン成功");
+
+
+
 </script>
 
 <template>
-    <div>ホーム画面</div>
+    <Sidebar />
 </template>
 
 <style scoped>
