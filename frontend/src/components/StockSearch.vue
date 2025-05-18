@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 import { useCustomToast } from '../config/ToastConfig.ts';
 import { stockService } from '../services/StockService.ts';
+import Loading from './parts/Loading.vue';
 
 const toast = useCustomToast();
 
@@ -26,7 +27,10 @@ const secondQuarter = ref('');
 const thirdQuarter = ref('');
 const fourthQuarter = ref('');
 
+const isLoading = ref(false);
+
 const handleSearchTicker = async () => {
+    isLoading.value = true;
     stockService(inputTicker.value).then(result => {
         companyName.value = result.data.tickerData.companyName;
         ticker.value = result.data.tickerData.ticker;
@@ -49,6 +53,8 @@ const handleSearchTicker = async () => {
     }).catch(err => {
         toast.showErrorToast(err.response.data.message);
         console.log(err);
+    }).finally(() => {
+        isLoading.value = false;
     });
 }
 
@@ -91,6 +97,7 @@ const handleSearchTicker = async () => {
     <div>第二四半期： {{ secondQuarter }}</div>
     <div>第三四半期： {{ thirdQuarter }}</div>
     <div>第四四半期： {{ fourthQuarter }}</div>
+    <Loading v-if="isLoading" />
 </template>
 
 <style scoped>
