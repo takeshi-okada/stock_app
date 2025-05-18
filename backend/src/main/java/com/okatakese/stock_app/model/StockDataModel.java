@@ -4,11 +4,8 @@ import lombok.Data;
 
 @Data
 public class StockDataModel {
-    /** 株価 */
-    private String stockPrice;
-    /** 前日比 */
-    private String comparedToThePreviousDay;
-    /** 前日比パーセント */
-    private String percentComparedToThePreviousDay;
-
+    /** 銘柄コード情報 */
+    private TickerDataModel tickerData;
+    /** 配当金情報 */
+    private DividendDataModel dividendData;
 }

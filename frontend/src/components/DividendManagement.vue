@@ -37,11 +37,11 @@ const handleClose = () => {
 
 <template>
   <h1 class="text-3xl font-bold underline">
-    資産
+    配当管理
   </h1>
   <hr>
   <div>
-    <button v-on:click="clickOpenRegisterModal">資産追加登録</button>
+    <button v-on:click="clickOpenRegisterModal">銘柄追加登録</button>
     <button v-on:click="clickOpenEditModal">編集</button>
   </div>
   <div v-if="openModalFlg">

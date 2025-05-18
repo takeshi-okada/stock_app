@@ -2,8 +2,10 @@ import * as VueRouter from "vue-router";
 import Login from "../pages/Login.vue";
 import NewRegister from "../pages/NewRegister.vue";
 import Home from "../pages/Home.vue";
-import Dashboad from "../components/Dashboad.vue";
+
 import Assets from "../components/Assets.vue";
+import StockSearch from "../components/StockSearch.vue";
+import DividendManagement from "../components/DividendManagement.vue";
 
 const routes: VueRouter.RouteRecordRaw[] = [
   {
@@ -22,15 +24,21 @@ const routes: VueRouter.RouteRecordRaw[] = [
     component: Home,
     children: [
       {
-        path: "/dashboad",
-        name: "dashboad",
-        component: Dashboad
-      },
-      {
         path: "/assets",
         name: "assets",
         component: Assets
-      }
+      },
+      {
+        path: "/dividend-management",
+        name: "dividendManagement",
+        component: DividendManagement
+      },
+      {
+        path: "/stock-search",
+        name: "stockSearch",
+        component: StockSearch
+      },
+      
     ]
   }
 ];
