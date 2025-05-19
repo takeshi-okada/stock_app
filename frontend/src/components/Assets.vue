@@ -1,64 +1,37 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref } from 'vue';
+import { cloneDeep }from 'lodash';
 
 import InputModal from './modal/InputModal.vue';
 import { MODE } from '../constant/constants';
 import AgGrid from './parts/AgGrid.vue';
 import { columnDefs } from '../test/data/columnDefs';
 import { rowData } from '../test/data/rowData';
+import { _addColumnDefaultAndTypes } from 'ag-grid-community';
+import { useCustomToast } from '../config/ToastConfig';
+import { getMessage } from '../utils/Message';
+import { ERR_COMMON_MESSAGE_03 } from '../constant/messageConstants';
+
+const toast = useCustomToast();
 
 /** 登録モーダル開閉フラグ */
 const openModalFlg = ref(false);
-
 /** モード */
 const mode = ref(MODE.NEW);
-
+/** 選択行データ */
 const selectedRowDate = ref([]);
-
-/**
- * 資産追加登録ボタン押下時処理
- */
-const clickOpenRegisterModal = () => {
-  mode.value = MODE.NEW;
-  openModalFlg.value = true;
-}
-
-/**
- * 編集ボタン押下時処理
- */
-const clickOpenEditModal = () => {
-  if(selectedRowDate.value.length === 0) return
-
-  for (const data in selectedRowDate.value[0]) {
-    formData[data] = selectedRowDate.value[0][data]
-  }
-
-  mode.value = MODE.EDIT;
-  openModalFlg.value = true;
-}
-
-/**
- * 登録モーダル閉じるボタン押下後処理
- */
-const handleClose = () => {
-  openModalFlg.value = false;
-}
-
-/**
- * チェックボタン押下後処理
- */
-const handleSelected = (rowData: any) => {
-  selectedRowDate.value = rowData;
-}
-
-const myColumnDefs = columnDefs;
-const myRowData = rowData;
+/** カラム定義 */
+const myColumnDefs = cloneDeep(columnDefs);
+/** 行データ */
+const myRowData = cloneDeep(rowData);
+/** グリッドオプション */
 const gridOptions = {
   rowSelection: {
     mode: 'singleRow' as const,
     checkboxes: true,
   }
-}
+};
+/** フォーム定義 */
 const formDefs = [
   {
     field: 'self',
@@ -118,7 +91,7 @@ const formDefs = [
     ]
   },
 ];
-
+/** フォームデータ */
 const formData: {[key: string]: string} = reactive({
   bank_1: '',
   bank_2: '',
@@ -131,6 +104,48 @@ const formData: {[key: string]: string} = reactive({
   pension_4: '',
 });
 
+/**
+ * 資産追加登録ボタン押下時処理
+ */
+const clickOpenRegisterModal = () => {
+  mode.value = MODE.NEW;
+  openModalFlg.value = true;
+}
+
+/**
+ * 編集ボタン押下時処理
+ */
+const clickOpenEditModal = () => {
+  if(selectedRowDate.value.length === 0) {
+    toast.showErrorToast(getMessage(ERR_COMMON_MESSAGE_03, "編集画面"));
+    return;
+  }
+
+  for (const data in selectedRowDate.value[0]) {
+    formData[data] = selectedRowDate.value[0][data]
+  }
+
+  mode.value = MODE.EDIT;
+  openModalFlg.value = true;
+}
+
+/**
+ * 登録モーダル閉じるボタン押下後処理
+ */
+const handleClose = () => {
+  // フォームデータを初期化
+  for (const data in formData) {
+    formData[data] = '';
+  }
+  openModalFlg.value = false;
+}
+
+/**
+ * チェックボタン押下後処理
+ */
+const handleSelected = (rowData: any) => {
+  selectedRowDate.value = rowData;
+}
 
 </script>
 

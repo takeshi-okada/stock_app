@@ -1,20 +1,27 @@
 <script setup lang="ts">
-import { defineEmits } from 'vue';
+import { defineEmits, ref } from 'vue';
 import { MODE } from '../../constant/constants';
+import { cloneDeep } from 'lodash';
 
 const props = defineProps<{ mode: string, formDefs: any, formData: any }>();
 const emit = defineEmits(['clickClose']);
 
+/** フォームデータ */
+const myFormData = ref(cloneDeep(props.formData));
+/** タイトル */
 const title = props.mode === MODE.NEW ? "新規登録" : "編集"
+/** ボタン名 */
 const buttonName = props.mode === MODE.NEW ? "登録" : "更新"
 
 /** 閉じるボタン押下時処理 */
 const clickClose = () => {
+    myFormData.value = null;
     emit('clickClose');
 }
 
 /** 新規登録処理 */
 const clickRegister = () => {
+    myFormData.value = null;
     emit('clickClose');
 }
 
@@ -38,7 +45,7 @@ const clickRegister = () => {
                                         type="text"
                                         :id="element.field"
                                         :name="element.field"
-                                        v-model="formData[element.field]"
+                                        v-model="myFormData[element.field]"
                                         :disabled="element.disabled"
                                         required
                                         class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
@@ -54,7 +61,7 @@ const clickRegister = () => {
                                 type="text"
                                 :id="formDef.field"
                                 :name="formDef.field"
-                                v-model="formData[formDef.field]"
+                                v-model="myFormData[formDef.field]"
                                 required
                                 :disabled="formDef.disabled"
                                 class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm"
