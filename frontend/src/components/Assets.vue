@@ -109,7 +109,7 @@ const formData: {[key: string]: string} = reactive({
 });
 const datasets = myChartDefs.map(def => ({
   label: def.label,
-  data: myRowData.map(row => row[def.field]).slice(-10),
+  data: myRowData.map(row => row[def.field as keyof typeof row]).slice(-10),
   backgroundColor: def.color,
 }));
 /** チャートデータ */
@@ -169,7 +169,7 @@ const handleSelected = (rowData: any) => {
       資産
     </h1>
     <MonthlyBarChart
-      class="h-70 col-span-12"
+      class="h-60 md:h-70 col-span-12"
       :chartData="chartData"
     />
     <div class="col-span-12">
