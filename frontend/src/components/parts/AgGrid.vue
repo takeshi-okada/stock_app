@@ -5,7 +5,6 @@ import type {
   GridOptions,
   GridReadyEvent,
 } from 'ag-grid-community';
-import type { AgGridVue } from 'ag-grid-vue3';
 import { ref } from 'vue';
 
 

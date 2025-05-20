@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 
 import { useCustomToast } from '../config/ToastConfig.ts';
 import { stockService } from '../services/StockService.ts';
@@ -48,10 +48,22 @@ const displayValue = reactive({
     /** 第四四半期 */
     fourthQuarter: '',
 })
-
 /** ローディング中フラグ */
 const isLoading = ref(false);
+/** 履歴銘柄コード入力値リスト */
+const historyTickerList = ref<string[]>([]);
+/** 検索履歴表示用 */
+const latestFiveHistoryTickers = computed(() => {
+    return historyTickerList.value.slice(-5).reverse();
+});
+/** 前日比値背景色表示用 */
+const comparedToThePreviousDayBgColor = computed(() => {
+    const value = Number(displayValue.comparedToThePreviousDay);
 
+    if (isNaN(value)) return 'bg-gray-500';
+    return value < 0 ? 'bg-red-500' : 'bg-green-500';
+});
+/** 銘柄コード検索処理 */
 const handleSearchTicker = async () => {
     isLoading.value = true;
     stockService(inputTicker.value).then(result => {
@@ -73,6 +85,8 @@ const handleSearchTicker = async () => {
         displayValue.secondQuarter = result.data.dividendData.secondQuarter;
         displayValue.thirdQuarter = result.data.dividendData.thirdQuarter;
         displayValue.fourthQuarter = result.data.dividendData.fourthQuarter;
+
+        historyTickerList.value.push(inputTicker.value);
     }).catch(err => {
         toast.showErrorToast(err.response.data.message);
         console.log(err);
@@ -81,15 +95,24 @@ const handleSearchTicker = async () => {
     });
 }
 
+/**
+ * 履歴ボタン押下時処理
+ * @param historyTicker 履歴銘柄コードボタン値
+ */
+const handleHistoryButton = (historyTicker: string) => {
+    inputTicker.value = historyTicker;
+}
+
+
 </script>
 
 <template>
-    <div class="grid grid-cols-12 gap-4">
+    <div class="grid grid-cols-12 gap-2 lg:gap-4 bg-gray-100">
         <div class="col-span-6 text-2xl md:text-3xl font-bold">
             株検索
         </div>
         <input
-            class="h-10 col-span-3 col-start-1 px-4 py-1 border border-gray-300 rounded-md shadow-sm"
+            class="h-8 lg:h-10 col-span-3 col-start-1 px-4 py-1 border border-gray-300 bg-white rounded-md shadow-sm"
             type="text"
             id="ticker"
             v-model="inputTicker"
@@ -97,18 +120,29 @@ const handleSearchTicker = async () => {
             required
         />
         <button
-            class="h-10 w-20 col-span-2 col-start-4 bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600"
-            v-on:click= "handleSearchTicker"
+            class="h-8 lg:h-10 w-20 col-span-2 col-start-4 bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 cursor-pointer"
+            v-on:click="handleSearchTicker"
         >
             検索
         </button>
-        <div class="col-span-10 lg:col-span-6 col-start-1 lg:col-start-1 p-4 grid grid-cols-12 gap-2 bg-white shadow-md rounded-lg">
-            <div class="col-span-6 col-start-1 text-xs lg:text-xl">{{ `${displayValue.ticker} ${displayValue.sector}` }}</div>
-            <div class="col-span-8 col-start-1 text-2xl lg:text-3xl">{{ displayValue.companyName }}</div>
-            <div class="col-span-5 col-start-1 text-3xl lg:text-4xl font-bold">{{ displayValue.stockPrice }}</div>
-            <div class="col-span-7 col-start-6 h-10 w-max py-2 px-2 text-xs grid place-items-center bg-blue-500 text-white rounded-2xl">前日比： {{ displayValue.comparedToThePreviousDay }} ({{ displayValue.percentComparedToThePreviousDay }}%)</div>
+        <div class="h-6 lg:h-8 col-span-12 col-start-1 grid grid-cols-12 gap-1">
+            <div class="col-span-2 lg:col-span-1 text-xs lg:text-sm grid place-items-start items-center">検索履歴</div>
+            <template v-for="(historyTicker, index) in latestFiveHistoryTickers" :key="historyTicker + '-' + index">
+                <button
+                    class="col-span-1 text-xs lg:text-sm cursor-pointer rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700"
+                    @click="handleHistoryButton(historyTicker)"
+                >
+                    {{ historyTicker }}
+                </button>
+            </template>
         </div>
-        <div class="col-span-10 lg:col-span-6 col-start-1 lg:col-start-7 p-4 grid grid-cols-12 gap-2 bg-white shadow-md rounded-lg">
+        <div class="col-span-12 lg:col-span-6 col-start-1 lg:col-start-1 p-2 lg:p-4 grid grid-cols-12 gap-2 bg-white shadow-md rounded-lg">
+            <div class="col-span-6 col-start-1 text-xs lg:text-xl">{{ `${displayValue.ticker} ${displayValue.sector}` }}</div>
+            <div class="col-span-12 col-start-1 text-xl lg:text-2xl">{{ displayValue.companyName }}</div>
+            <div class="col-span-5 col-start-1 text-2xl lg:text-3xl font-bold">{{ displayValue.stockPrice }}</div>
+            <div :class="['col-span-7 h-10 w-max py-2 px-2 text-xs grid place-items-center text-white rounded-2xl', comparedToThePreviousDayBgColor]">前日比： {{ displayValue.comparedToThePreviousDay }} ({{ displayValue.percentComparedToThePreviousDay }}%)</div>
+        </div>
+        <div class="col-span-12 lg:col-span-6 col-start-1 lg:col-start-7 p-2 lg:p-4 grid grid-cols-12 gap-2 bg-white shadow-md rounded-lg">
             <div class="col-span-12 col-start-1 text-xl lg:text-2xl">株価・株式情報</div>
             <div class="col-span-6 lg:col-span-7 col-start-1 text-sm lg:text-xl">昨日終値</div>
             <div class="col-span-6 lg:col-span-5 text-sm lg:text-xl">{{displayValue.yesterdayFinishPrice}}</div>
@@ -119,7 +153,7 @@ const handleSearchTicker = async () => {
             <div class="col-span-6 lg:col-span-7 col-start-1 text-sm lg:text-xl">安値</div>
             <div class="col-span-6 lg:col-span-5 text-sm lg:text-xl">{{displayValue.lowestPrice}}</div>
         </div>
-        <div class="col-span-10 lg:col-span-6 col-start-1 lg:col-start-1 p-4 grid grid-cols-12 gap-2 bg-white shadow-md rounded-lg">
+        <div class="col-span-12 lg:col-span-6 col-start-1 lg:col-start-1 p-2 lg:p-4 grid grid-cols-12 gap-2 bg-white shadow-md rounded-lg">
             <div class="col-span-12 col-start-1 text-xl lg:text-2xl">配当情報</div>
             <div class="col-span-6 lg:col-span-7 col-start-1 text-sm lg:text-xl">一株あたり配当金</div>
             <div class="col-span-6 lg:col-span-5 text-sm lg:text-xl">{{displayValue.dps}}</div>
@@ -128,7 +162,7 @@ const handleSearchTicker = async () => {
             <div class="col-span-6 lg:col-span-7 col-start-1 text-sm lg:text-xl">配当性向</div>
             <div class="col-span-6 lg:col-span-5 text-sm lg:text-xl">{{displayValue.dividendPayoutRatio}}</div>
         </div>
-        <div class="col-span-10 lg:col-span-6 col-start-1 lg:col-start-7 p-4 grid grid-cols-12 gap-2 bg-white shadow-md rounded-lg">
+        <div class="col-span-12 lg:col-span-6 col-start-1 lg:col-start-7 p-2 lg:p-4 grid grid-cols-12 gap-2 bg-white shadow-md rounded-lg">
             <div class="col-span-12 col-start-1 text-xl lg:text-2xl">配当支払月</div>
             <div class="col-span-6 lg:col-span-7 col-start-1 text-sm lg:text-xl">基準月</div>
             <div class="col-span-6 lg:col-span-5 text-sm lg:text-xl">{{displayValue.baseMonth}}</div>

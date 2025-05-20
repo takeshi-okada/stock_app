@@ -16,7 +16,7 @@ const handleLogin = async () => {
     }
     loginUserService(param).then(result => {
         console.log(result.data);
-        router.push('/home');
+        router.push('/assets');
     }).catch(err => {
         toast.showErrorToast(err);
         console.log(err);
