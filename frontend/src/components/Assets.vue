@@ -11,6 +11,8 @@ import { _addColumnDefaultAndTypes } from 'ag-grid-community';
 import { useCustomToast } from '../config/ToastConfig';
 import { getMessage } from '../utils/Message';
 import { ERR_COMMON_MESSAGE_03 } from '../constant/messageConstants';
+import MonthlyBarChart from './parts/MonthlyBarChart.vue';
+import { chartDefs } from '../test/data/chartDefs';
 
 const toast = useCustomToast();
 
@@ -24,6 +26,8 @@ const selectedRowDate = ref([]);
 const myColumnDefs = cloneDeep(columnDefs);
 /** 行データ */
 const myRowData = cloneDeep(rowData);
+/** チャート定義 */
+const myChartDefs = cloneDeep(chartDefs);
 /** グリッドオプション */
 const gridOptions = {
   rowSelection: {
@@ -103,6 +107,16 @@ const formData: {[key: string]: string} = reactive({
   pension_3: '',
   pension_4: '',
 });
+const datasets = myChartDefs.map(def => ({
+  label: def.label,
+  data: myRowData.map(row => row[def.field]).slice(-10),
+  backgroundColor: def.color,
+}));
+/** チャートデータ */
+const chartData = {
+  labels: myRowData.map(data => data.date).slice(-10),
+  datasets: datasets
+}
 
 /**
  * 資産追加登録ボタン押下時処理
@@ -150,36 +164,43 @@ const handleSelected = (rowData: any) => {
 </script>
 
 <template>
-  <h1 class="mb-4 text-3xl font-bold underline">
-    資産
-  </h1>
-  <div>
-    <button
-      class="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600"
-      v-on:click="clickOpenRegisterModal"
-    >
-      資産追加登録
-    </button>
-    <button
-      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-      v-on:click="clickOpenEditModal"
-    >
-      編集
-    </button>
-  </div>
-  <AgGrid
-    :columnDefs="myColumnDefs"
-    :rowData="myRowData"
-    :gridOptions="gridOptions"
-    @rowSelected="handleSelected"
-  />
-  <div v-if="openModalFlg">
-    <InputModal
-      :mode="mode"
-      :formDefs="formDefs"
-      :formData="formData"
-      @click-close="handleClose"
+  <div class="grid grid-cols-12 gap-2 lg:gap-4 bg-gray-100">
+    <h1 class="col-span-12 text-3xl font-bold">
+      資産
+    </h1>
+    <MonthlyBarChart
+      class="h-70 col-span-12"
+      :chartData="chartData"
     />
+    <div class="col-span-12">
+      <button
+        class="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600"
+        v-on:click="clickOpenRegisterModal"
+      >
+        資産追加登録
+      </button>
+      <button
+        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        v-on:click="clickOpenEditModal"
+      >
+        編集
+      </button>
+    </div>
+    <AgGrid
+      class="h-100 col-span-12"
+      :columnDefs="myColumnDefs"
+      :rowData="myRowData"
+      :gridOptions="gridOptions"
+      @rowSelected="handleSelected"
+    />
+    <div v-if="openModalFlg">
+      <InputModal
+        :mode="mode"
+        :formDefs="formDefs"
+        :formData="formData"
+        @click-close="handleClose"
+      />
+    </div>
   </div>
 </template>
 

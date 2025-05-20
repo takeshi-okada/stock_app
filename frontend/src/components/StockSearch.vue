@@ -103,7 +103,6 @@ const handleHistoryButton = (historyTicker: string) => {
     inputTicker.value = historyTicker;
 }
 
-
 </script>
 
 <template>
@@ -129,7 +128,7 @@ const handleHistoryButton = (historyTicker: string) => {
             <div class="col-span-2 lg:col-span-1 text-xs lg:text-sm grid place-items-start items-center">検索履歴</div>
             <template v-for="(historyTicker, index) in latestFiveHistoryTickers" :key="historyTicker + '-' + index">
                 <button
-                    class="col-span-1 text-xs lg:text-sm cursor-pointer rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700"
+                    class="col-span-2 md:col-span-1 text-xs lg:text-sm cursor-pointer rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700"
                     @click="handleHistoryButton(historyTicker)"
                 >
                     {{ historyTicker }}
