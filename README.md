@@ -31,6 +31,7 @@ package.json, build.gradle を参照してください
 
 
 ## ER図
+<img width="627" alt="image" src="https://github.com/user-attachments/assets/3927e7ac-ab10-48e4-9825-1db8a62d91fb" />
 
 
 ### 今後の課題
